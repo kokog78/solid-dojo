@@ -15,6 +15,7 @@ public class DatabaseInitializer {
 		try (Connection conn = DriverManager.getConnection(LicenseJob.JDBC_URL)) {
 			Statement stmt = conn.createStatement();
 			stmt.execute("create table licenses (id varchar(15), type varchar(30), owner varchar(100), valid date)");
+			conn.commit();
 		}
 	}
 	

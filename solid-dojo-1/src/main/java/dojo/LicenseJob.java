@@ -21,8 +21,8 @@ import org.apache.commons.csv.CSVRecord;
 
 public class LicenseJob {
 	
-	final static String DOWNLOAD_URL = "https://raw.githubusercontent.com/kokog78/solid-dojo/master/solid-dojo-1/data/licenses.csv";
-	final static String JDBC_URL = "jdbc:h2:./data/licenses";
+	static String DOWNLOAD_URL = "https://raw.githubusercontent.com/kokog78/solid-dojo/master/solid-dojo-1/data/licenses.csv";
+	static String JDBC_URL = "jdbc:h2:./data/licenses";
 
 	public void run() throws IOException, SQLException {
 		File file = downloadFile();
@@ -58,6 +58,7 @@ public class LicenseJob {
 				stmt.setDate(4, Date.valueOf(license.get("VALID")));
 				stmt.executeUpdate();
 			}
+			conn.commit();
 		}
 	}
 	
