@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,26 +19,53 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class LicenseJobTest {
 
 	private LicenseJob job = new LicenseJob();
 	
-	@BeforeClass
-	public static void initJdbc() throws SQLException {
-		LicenseJob.JDBC_URL = "jdbc:h2:mem:test";
+	@Before
+	public void initJdbc() throws SQLException {
+		LicenseJob.JDBC_URL = "jdbc:h2:./data/test";
 		new DatabaseInitializer().run();
 	}
 	
+	@After
+	public void dropTable() throws SQLException {
+		try (Connection conn = DriverManager.getConnection(LicenseJob.JDBC_URL)) {
+			conn.createStatement().executeLargeUpdate("drop table licenses;");
+			conn.commit();
+		}
+	}
+	
 	@Test
-	public void should_download_file() throws Exception {
+	public void should_download_and_process_empty_file() throws Exception {
+		initFile("ID,TYPE,OWNER,VALID");
+		job.run();
+		List<Map<String, Object>> result = getLicenses();
+		assertThat(result).hasSize(0);
+	}
+	
+	@Test
+	public void should_download_file_with_one_license() throws Exception {
 		initFile("ID,TYPE,OWNER,VALID", "A,B,C,2020-01-01");
 		job.run();
 		List<Map<String, Object>> result = getLicenses();
 		assertThat(result).hasSize(1);
-		assertLicense(result.get(0), "A", "B", "C");
+		assertLicense(result.get(0), "A", "B", "C", "2020-01-01");
+	}
+	
+	@Test
+	public void should_download_file_with_two_licenses() throws Exception {
+		initFile("ID,TYPE,OWNER,VALID", "E,F,G,2021-02-02", "H,I,J,2022-03-03");
+		job.run();
+		List<Map<String, Object>> result = getLicenses();
+		assertThat(result).hasSize(2);
+		assertLicense(result.get(0), "E", "F", "G", "2021-02-02");
+		assertLicense(result.get(1), "H", "I", "J", "2022-03-03");
 	}
 	
 	private void initFile(String ... lines) throws IOException {
@@ -63,10 +91,12 @@ public class LicenseJobTest {
 		return result;
 	}
 	
-	private void assertLicense(Map<String, Object> license, String id, String type, String owner) {
+	private void assertLicense(Map<String, Object> license, String id, String type, String owner, String date) {
 		assertThat(license.get("ID")).isEqualTo(id);
 		assertThat(license.get("TYPE")).isEqualTo(type);
 		assertThat(license.get("OWNER")).isEqualTo(owner);
+		SimpleDateFormat fmt = new SimpleDateFormat("YYYY-MM-dd");
+		assertThat(fmt.format(license.get("VALID"))).isEqualTo(date);
 	}
 	
 }
