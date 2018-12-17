@@ -28,13 +28,13 @@ public class LicenseJobTest {
 	private LicenseJob job = new LicenseJob();
 	
 	@Before
-	public void initJdbc() throws SQLException {
+	public void initOutput() throws SQLException {
 		LicenseJob.JDBC_URL = "jdbc:h2:./data/test";
 		new DatabaseInitializer().run();
 	}
 	
 	@After
-	public void dropTable() throws SQLException {
+	public void resetOutput() throws SQLException {
 		try (Connection conn = DriverManager.getConnection(LicenseJob.JDBC_URL)) {
 			conn.createStatement().executeLargeUpdate("drop table licenses;");
 			conn.commit();
@@ -43,39 +43,45 @@ public class LicenseJobTest {
 	
 	@Test
 	public void should_download_and_process_empty_file() throws Exception {
-		initFile("ID,TYPE,OWNER,VALID");
+		initSource("ID,TYPE,OWNER,VALID");
+		
 		job.run();
-		List<Map<String, Object>> result = getLicenses();
-		assertThat(result).hasSize(0);
+		
+		List<Map<String, Object>> results = mapResults();
+		assertThat(results).hasSize(0);
 	}
 	
 	@Test
 	public void should_download_file_with_one_license() throws Exception {
-		initFile("ID,TYPE,OWNER,VALID", "A,B,C,2020-01-01");
+		initSource("ID,TYPE,OWNER,VALID", "A,B,C,2020-01-01");
+		
 		job.run();
-		List<Map<String, Object>> result = getLicenses();
-		assertThat(result).hasSize(1);
-		assertLicense(result.get(0), "A", "B", "C", "2020-01-01");
+		
+		List<Map<String, Object>> results = mapResults();
+		assertThat(results).hasSize(1);
+		assertLicense(results.get(0), "A", "B", "C", "2020-01-01");
 	}
 	
 	@Test
 	public void should_download_file_with_two_licenses() throws Exception {
-		initFile("ID,TYPE,OWNER,VALID", "E,F,G,2021-02-02", "H,I,J,2022-03-03");
+		initSource("ID,TYPE,OWNER,VALID", "E,F,G,2021-02-02", "H,I,J,2022-03-03");
+		
 		job.run();
-		List<Map<String, Object>> result = getLicenses();
-		assertThat(result).hasSize(2);
-		assertLicense(result.get(0), "E", "F", "G", "2021-02-02");
-		assertLicense(result.get(1), "H", "I", "J", "2022-03-03");
+		
+		List<Map<String, Object>> results = mapResults();
+		assertThat(results).hasSize(2);
+		assertLicense(results.get(0), "E", "F", "G", "2021-02-02");
+		assertLicense(results.get(1), "H", "I", "J", "2022-03-03");
 	}
 	
-	private void initFile(String ... lines) throws IOException {
+	private void initSource(String ... lines) throws IOException {
 		List<String> list = Arrays.stream(lines).collect(Collectors.toList());
 		File file = File.createTempFile("download-", ".csv");
 		Files.write(file.toPath(), list, StandardCharsets.UTF_8, StandardOpenOption.WRITE);
 		LicenseJob.DOWNLOAD_URL = "file:///" + file.getAbsolutePath();
 	}
 	
-	private List<Map<String, Object>> getLicenses() throws SQLException {
+	private List<Map<String, Object>> mapResults() throws SQLException {
 		List<Map<String, Object>> result = new ArrayList<>();
 		try (Connection conn = DriverManager.getConnection(LicenseJob.JDBC_URL)) {
 			ResultSet licenses = conn.createStatement().executeQuery("select * from licenses");
