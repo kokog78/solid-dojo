@@ -1,12 +1,20 @@
-package dojo;
+package dojo.tictactoe;
 
-public class TicTacToeBoardChecker {
+public class Rules {
 
 	private final static int[][] winnerPositions = new int[][] {
 		{1, 0}, {0,1}, {1,1}, {-1,1}
 	};
+	
+	public void startGame(Board board) {
+		for (int y=0; y < board.getHeight(); y++) {
+			for (int x=0; x < board.getWidth(); x++) {
+				board.setCell(x, y, State.NONE);
+			}
+		}
+	}
 
-	public GameResult getResult(TicTacToeBoard board) {
+	public State getState(Board board) {
 		boolean hasEmpty = false;
 		for (int y=0; y < board.getHeight(); y++) {
 			for (int x=0; x < board.getWidth(); x++) {
@@ -16,9 +24,9 @@ public class TicTacToeBoardChecker {
 					for (int[] position : winnerPositions) {
 						int sumOfCells = sumOfCells(board, x, y, position[0], position[1]);
 						if (sumOfCells == 3) {
-							return GameResult.PLAYER_O;
+							return State.PLAYER_O;
 						} else if (sumOfCells == -3) {
-							return GameResult.PLAYER_X;
+							return State.PLAYER_X;
 						}
 					}
 					
@@ -26,25 +34,25 @@ public class TicTacToeBoardChecker {
 			}
 		}
 		if (!hasEmpty) {
-			return GameResult.DRAW;
+			return State.DRAW;
 		}
-		return GameResult.NONE;
+		return State.NONE;
 	}
 	
-	private int sumOfCells(TicTacToeBoard board, int x, int y, int deltax, int deltay) {
+	private int sumOfCells(Board board, int x, int y, int deltax, int deltay) {
 		return  getCellValue(board, x, y) +
 				getCellValue(board, x + deltax, y + deltay) +
 				getCellValue(board, x - deltax, y - deltay);
 	}
 	
-	private int getCellValue(TicTacToeBoard board, int x, int y) {
+	private int getCellValue(Board board, int x, int y) {
 		if (x < 0 || x >= board.getWidth() || y < 0 || y > board.getHeight()) {
 			return 0;
 		}
-		GameResult cell = board.getCell(x, y);
-		if (cell == GameResult.PLAYER_O) {
+		State cell = board.getCell(x, y);
+		if (cell == State.PLAYER_O) {
 			return 1;
-		} else if (cell == GameResult.PLAYER_X) {
+		} else if (cell == State.PLAYER_X) {
 			return -1;
 		} else {
 			return 0;

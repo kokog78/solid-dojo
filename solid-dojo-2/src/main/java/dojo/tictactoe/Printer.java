@@ -1,8 +1,8 @@
-package dojo;
+package dojo.tictactoe;
 
-public class TicTacToeBoardPrinter {
+public class Printer {
 
-	public void printBoard(TicTacToeBoard board) {
+	public void printBoard(Board board) {
 		System.out.print(' ');
 		for (int x=0; x < board.getWidth(); x++) {
 			System.out.print(' ');
@@ -14,8 +14,8 @@ public class TicTacToeBoardPrinter {
 			System.out.println(y);
 			for (int x=0; x < board.getWidth(); x++) {
 				System.out.print("|");
-				GameResult cell = board.getCell(x, y);
-				System.out.print(getPlayerMarker(cell));
+				State state = board.getCell(x, y);
+				System.out.print(getPlayerMarker(state));
 			}
 			System.out.println("|");
 		}
@@ -29,8 +29,8 @@ public class TicTacToeBoardPrinter {
 		System.out.println("+");
 	}
 	
-	private char getPlayerMarker(GameResult player) {
-		switch (player) {
+	private char getPlayerMarker(State state) {
+		switch (state) {
 		case PLAYER_O:
 			return 'O';
 		case PLAYER_X:
