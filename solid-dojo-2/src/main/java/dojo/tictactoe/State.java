@@ -2,9 +2,9 @@ package dojo.tictactoe;
 
 public enum State {
 
-	NONE,
+	BLANK,
+	WALL,
 	PLAYER_O,
-	PLAYER_X,
-	DRAW;
+	PLAYER_X;
 	
 }
