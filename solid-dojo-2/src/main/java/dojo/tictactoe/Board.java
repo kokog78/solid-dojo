@@ -38,6 +38,15 @@ public class Board {
 		numberOfMoves = 0;
 	}
 	
+	public void clear() {
+		started = false;
+		for (int y=0; y < height; y++) {
+			for (int x=0; x < width; x++) {
+				setCell(x, y, State.BLANK);
+			}
+		}
+	}
+	
 	public long getPlayerOThinkingMillis() {
 		return playerOThinkingMillis;
 	}
@@ -48,17 +57,6 @@ public class Board {
 	
 	public int getNumberOfMoves() {
 		return numberOfMoves;
-	}
-	
-	public void clear() {
-		playerOThinkingMillis = 0;
-		playerXThinkingMillis = 0;
-		started = false;
-		for (int y=0; y < height; y++) {
-			for (int x=0; x < width; x++) {
-				setCell(x, y, State.BLANK);
-			}
-		}
 	}
 	
 	public int getNumberOfBlankCells() {
