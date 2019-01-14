@@ -113,15 +113,10 @@ public class Rules {
 	}
 
 	public void printBoard() {
-		System.out.print(' ');
-		for (int x=0; x < board.getWidth(); x++) {
-			System.out.print(' ');
-			System.out.print(x);
-		}
 		System.out.println();
 		for (int y=board.getHeight()-1; y >= 0; y--) {
 			printLine(board.getWidth());
-			System.out.println(y);
+			System.out.print(y);
 			for (int x=0; x < board.getWidth(); x++) {
 				System.out.print("|");
 				State state = board.getCell(x, y);
@@ -130,9 +125,19 @@ public class Rules {
 			System.out.println("|");
 		}
 		printLine(board.getWidth());
+		printXLabels();
+	}
+	
+	private void printXLabels() {
+		System.out.print(' ');
+		for (int x=0; x < board.getWidth(); x++) {
+			System.out.print(' ');
+			System.out.print(x);
+		}
 	}
 
 	private void printLine(int width) {
+		System.out.print(' ');
 		for (int x=0; x < width; x++) {
 			System.out.print("+-");
 		}
@@ -171,7 +176,7 @@ public class Rules {
 	}
 
 	private int getCellValue(int x, int y) {
-		if (x < 0 || x >= board.getWidth() || y < 0 || y > board.getHeight()) {
+		if (x < 0 || x >= board.getWidth() || y < 0 || y >= board.getHeight()) {
 			return 0;
 		}
 		State cell = board.getCell(x, y);
