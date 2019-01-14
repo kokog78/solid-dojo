@@ -32,11 +32,13 @@ public class TicTacToeIT {
 	
 	@Test
 	public void plays_a_draw_game() throws Exception {
+		// initialization
 		board = new Board(3, 3);
 		rules = new Rules(board);
 		rules.initializeNormalGame();
 		rules.startGame();
 		
+		// game
 		normalMove(1, 1, false);
 		normalMove(1, 2, false);
 		normalMove(0, 1, false);
@@ -47,6 +49,7 @@ public class TicTacToeIT {
 		normalMove(2, 0, false);
 		normalMove(1, 0, true);
 		
+		// results
 		assertResults(Result.DRAW);
 		assertStatistics(9);
 		printGameBoard("Normal game, draw results");
@@ -54,11 +57,13 @@ public class TicTacToeIT {
 	
 	@Test
 	public void plays_a_won_game() throws Exception {
+		// initialization
 		board = new Board(3, 3);
 		rules = new Rules(board);
 		rules.initializeNormalGame();
 		rules.startGame();
 		
+		// game
 		normalMove(1, 1, false);
 		normalMove(1, 2, false);
 		normalMove(0, 1, false);
@@ -69,6 +74,7 @@ public class TicTacToeIT {
 		normalMove(1, 0, false);
 		normalMove(2, 0, true);
 		
+		// results
 		assertResults(Result.WINNER_O);
 		assertStatistics(9);
 		printGameBoard("Normal game, player O won");
@@ -76,6 +82,7 @@ public class TicTacToeIT {
 	
 	@Test
 	public void plays_a_cross_shaped_game() throws Exception {
+		// initialization
 		board = new Board(6, 6);
 		rules = new Rules(board);
 		assertGameStatus(false, false, State.PLAYER_O);
@@ -87,6 +94,7 @@ public class TicTacToeIT {
 		assertGameStatus(true, false, State.PLAYER_O);		
 		printGameBoard("Cross-shaped game, initial board");
 
+		// game
 		normalMove(1, 4, false);
 		normalMove(2, 3, false);
 		normalMove(4, 1, false);
@@ -106,6 +114,7 @@ public class TicTacToeIT {
 		normalMove(4, 0, false);
 		normalMove(3, 1, true);
 		
+		// results
 		assertResults(Result.WINNER_X);
 		assertStatistics(18);
 		printGameBoard("Cross-shaped game, results");
