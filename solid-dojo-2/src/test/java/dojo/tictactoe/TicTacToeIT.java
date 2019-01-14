@@ -17,7 +17,7 @@ public class TicTacToeIT {
 	}
 	
 	@Test
-	public void plays_a_draw_game() throws Exception {
+	public void initializes_a_normal_game() throws Exception {
 		board = new Board(3, 3);
 		rules = new Rules(board);
 		assertGameStatus(false, false, State.PLAYER_O);
@@ -27,7 +27,15 @@ public class TicTacToeIT {
 		
 		rules.startGame();
 		assertGameStatus(true, false, State.PLAYER_O);
-		printGameBoard();
+		printGameBoard("Normal game, initial board");
+	}
+	
+	@Test
+	public void plays_a_draw_game() throws Exception {
+		board = new Board(3, 3);
+		rules = new Rules(board);
+		rules.initializeNormalGame();
+		rules.startGame();
 		
 		normalMove(1, 1, false);
 		normalMove(1, 2, false);
@@ -41,21 +49,15 @@ public class TicTacToeIT {
 		
 		assertResults(Result.DRAW);
 		assertStatistics(9);
-		printGameBoard();
+		printGameBoard("Normal game, draw results");
 	}
 	
 	@Test
 	public void plays_a_won_game() throws Exception {
 		board = new Board(3, 3);
 		rules = new Rules(board);
-		assertGameStatus(false, false, State.PLAYER_O);
-		
 		rules.initializeNormalGame();
-		assertGameStatus(false, false, State.PLAYER_O);
-		
 		rules.startGame();
-		assertGameStatus(true, false, State.PLAYER_O);
-		printGameBoard();
 		
 		normalMove(1, 1, false);
 		normalMove(1, 2, false);
@@ -69,7 +71,7 @@ public class TicTacToeIT {
 		
 		assertResults(Result.WINNER_O);
 		assertStatistics(9);
-		printGameBoard();
+		printGameBoard("Normal game, player O won");
 	}
 	
 	@Test
@@ -83,7 +85,7 @@ public class TicTacToeIT {
 		
 		rules.startGame();
 		assertGameStatus(true, false, State.PLAYER_O);		
-		printGameBoard();
+		printGameBoard("Cross-shaped game, initial board");
 
 		normalMove(1, 4, false);
 		normalMove(2, 3, false);
@@ -106,7 +108,7 @@ public class TicTacToeIT {
 		
 		assertResults(Result.WINNER_X);
 		assertStatistics(18);
-		printGameBoard();
+		printGameBoard("Cross-shaped game, results");
 	}
 	
 	@Test
@@ -162,8 +164,10 @@ public class TicTacToeIT {
 		assertThat(stats.numberOfMoves).isEqualTo(numberOfMoves);
 	}
 	
-	private void printGameBoard() {
+	private void printGameBoard(String title) {
+		System.out.println(title);
 		rules.printBoard();
+		System.out.println();
 		System.out.println();
 	}
 	
