@@ -1,0 +1,20 @@
+{
+  "name": "solid-dojo-1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha src/test/javascript"
+  },
+  "author": "Kornél Simon",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
+  },
+  "dependencies": {
+    "download-file": "^0.1.5",
+    "papaparse": "^4.6.3",
+    "tmp": "0.0.33"
+  }
+}

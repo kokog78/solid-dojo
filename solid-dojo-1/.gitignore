@@ -1,4 +1,6 @@
 /.settings/
 /target/
 /data/*.mv.db
+/data/*.json
 /test-output/
+/node_modules/
