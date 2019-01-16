@@ -22,18 +22,20 @@ import java.util.stream.Collectors;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 public class LicenseJobTest {
 
 	private LicenseJob job = new LicenseJob();
 	
-	@Before
+	@Before @BeforeMethod
 	public void initOutput() throws SQLException {
 		LicenseJob.JDBC_URL = "jdbc:h2:./data/test";
 		new DatabaseInitializer().run();
 	}
 	
-	@After
+	@After @AfterMethod
 	public void resetOutput() throws SQLException {
 		try (Connection conn = DriverManager.getConnection(LicenseJob.JDBC_URL)) {
 			conn.createStatement().executeLargeUpdate("drop table licenses;");
@@ -41,7 +43,7 @@ public class LicenseJobTest {
 		}
 	}
 	
-	@Test
+	@Test @org.testng.annotations.Test
 	public void should_download_and_process_empty_file() throws Exception {
 		initSource("ID,TYPE,OWNER,VALID");
 		
@@ -51,7 +53,7 @@ public class LicenseJobTest {
 		assertThat(results).hasSize(0);
 	}
 	
-	@Test
+	@Test @org.testng.annotations.Test
 	public void should_download_file_with_one_license() throws Exception {
 		initSource("ID,TYPE,OWNER,VALID", "A,B,C,2020-01-01");
 		
@@ -62,7 +64,7 @@ public class LicenseJobTest {
 		assertLicense(results.get(0), "A", "B", "C", "2020-01-01");
 	}
 	
-	@Test
+	@Test @org.testng.annotations.Test
 	public void should_download_file_with_two_licenses() throws Exception {
 		initSource("ID,TYPE,OWNER,VALID", "E,F,G,2021-02-02", "H,I,J,2022-03-03");
 		

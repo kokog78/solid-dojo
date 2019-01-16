@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
 
 public class TicTacToeIT {
 
@@ -11,12 +12,12 @@ public class TicTacToeIT {
 	private Rules rules;
 	private State player;
 	
-	@Before
+	@Before @BeforeMethod
 	public void initPlayer() {
 		player = State.PLAYER_O;
 	}
 	
-	@Test
+	@Test @org.testng.annotations.Test
 	public void initializes_a_normal_game() throws Exception {
 		board = new Board(3, 3);
 		rules = new Rules(board);
@@ -30,7 +31,7 @@ public class TicTacToeIT {
 		printGameBoard("Normal game, initial board");
 	}
 	
-	@Test
+	@Test @org.testng.annotations.Test
 	public void plays_a_draw_game() throws Exception {
 		// initialization
 		board = new Board(3, 3);
@@ -55,7 +56,7 @@ public class TicTacToeIT {
 		printGameBoard("Normal game, draw results");
 	}
 	
-	@Test
+	@Test @org.testng.annotations.Test
 	public void plays_a_won_game() throws Exception {
 		// initialization
 		board = new Board(3, 3);
@@ -80,7 +81,7 @@ public class TicTacToeIT {
 		printGameBoard("Normal game, player O won");
 	}
 	
-	@Test
+	@Test @org.testng.annotations.Test
 	public void plays_a_cross_shaped_game() throws Exception {
 		// initialization
 		board = new Board(6, 6);
@@ -120,7 +121,7 @@ public class TicTacToeIT {
 		printGameBoard("Cross-shaped game, results");
 	}
 	
-	@Test
+	@Test @org.testng.annotations.Test
 	public void gives_random_start_on_normal_game() throws Exception {
 		board = new Board(3, 3);
 		rules = new Rules(board);
@@ -131,7 +132,7 @@ public class TicTacToeIT {
 		assertGameStatus(false, false, State.PLAYER_X);
 	}
 	
-	@Test
+	@Test @org.testng.annotations.Test
 	public void gives_random_start_on_cross_shaped_game() throws Exception {
 		board = new Board(6, 6);
 		rules = new Rules(board);
