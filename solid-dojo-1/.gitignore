@@ -1,4 +1,5 @@
 /.settings/
+/.idea/
 /target/
 /data/*.mv.db
 /data/*.json
