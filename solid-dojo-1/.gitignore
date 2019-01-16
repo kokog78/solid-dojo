@@ -1,2 +1,4 @@
+/.settings/
 /target/
 /data/*.mv.db
+/test-output/
