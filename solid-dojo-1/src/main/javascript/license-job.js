@@ -1,31 +1,40 @@
-const download = require('download-file')
+const https = require('https');
 const fs = require('fs');
-const tmp = require('tmp');
 const Papa = require('papaparse');
 
 const DOWNLOAD_URL = 'https://raw.githubusercontent.com/kokog78/solid-dojo/master/solid-dojo-1/data/licenses.csv';
 
+class LicenseJob {
+
+    constructor() {
+        this.downloadUrl = DOWNLOAD_URL;
+    }
+
+    run(callback) {
+        downloadFile(this.downloadUrl, stream => {
+            parse(stream, licenses => {
+                updateLicenses(licenses, () => {
+                    callback(licenses);
+                });
+            });
+        });
+    }
+
+};
+
 function downloadFile(url, callback) {
     if (url.startsWith('file:///')) {
-        callback(url.substring(8, url.length));
+        let fileName = url.substring(8, url.length);
+        let stream = fs.createReadStream(fileName);
+        callback(stream);
     } else {
-        let file = tmp.fileSync({
-            prefix: 'licenses-',
-            postfix: '.csv'
-        });
-        download(url, {
-            filename: file.name
-        }, err => {
-            if (err) {
-                throw err;
-            }
-            callback(file);
+        https.get(url, response => {
+            callback(response);
         });
     }
 }
 
-function parse(fileName, callback) {
-    let stream = fs.createReadStream(fileName);
+function parse(stream, callback) {
     Papa.parse(stream, {
         delimiter: ',',
         header: true,
@@ -61,20 +70,4 @@ function updateLicenses(licenses, callback) {
     });
 }
 
-module.exports = class LicenseJob {
-
-    constructor() {
-        this.downloadUrl = DOWNLOAD_URL;
-    }
-
-    run(callback) {
-        downloadFile(this.downloadUrl, fileName => {
-            parse(fileName, licenses => {
-                updateLicenses(licenses, () => {
-                    callback(licenses);
-                });
-            });
-        });
-    }
-
-};
+module.exports = LicenseJob;
